@@ -1218,7 +1218,7 @@ function serviceManager()
                         child.stdout.str = ''; child.stdout.on('data', function (c) { this.str += c.toString(); });
                         child.stdin.write("service " + this.name + " onestatus | awk '");
                         child.stdin.write('{ split($6, res, ".");  ');
-                        child.stdin.write('  cm=sprintf("ps -p %s -w", res[1]);');
+                        child.stdin.write('  cm=sprintf("\'ps\' -p %s -w", res[1]);');
                         child.stdin.write('  system(cm); ')
                         child.stdin.write('}\' | awk \'NR>1\' | awk \'');
                         child.stdin.write('{');
@@ -1764,7 +1764,7 @@ function serviceManager()
                                     child.stderr.on('data', function () { });
                                     if (this._autorestart)
                                     {
-                                        child.stdin.write('cat /var/run/' + this.name + ".pid | awk 'NR==1{ sh=sprintf(\"ps -o pid -o ppid | grep %s\",$0); system(sh); }' | awk '{ if($2!=\"1\") { print $1; }}' | awk 'NR==1{ print $0; }'\nexit\n");
+                                        child.stdin.write('cat /var/run/' + this.name + ".pid | awk 'NR==1{ sh=sprintf(\"\'ps\' -o pid -o ppid | grep %s\",$0); system(sh); }' | awk '{ if($2!=\"1\") { print $1; }}' | awk 'NR==1{ print $0; }'\nexit\n");
                                     }
                                     else
                                     {
@@ -2065,7 +2065,7 @@ function serviceManager()
 
                                     child = require('child_process').execFile('/bin/sh', ['sh']);
                                     child.stdout.str = ''; child.stdout.on('data', function (c) { this.str += c.toString(); });
-                                    child.stdin.write('ps -p ' + pid + ' -o pid h\nexit\n');
+                                    child.stdin.write('\'ps\' -p ' + pid + ' -o pid h\nexit\n');
                                     child.waitExit();
                                     if(child.stdout.str.trim() == pid)
                                     {

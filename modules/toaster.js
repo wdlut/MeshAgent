@@ -34,7 +34,7 @@ if (process.platform == 'linux' || process.platform == 'darwin' || process.platf
         child.stdout.on('data', function (chunk) { this.str += chunk.toString(); });
         if (process.platform == 'linux' || process.platform == 'freebsd')
         {
-            child.stdin.write("whereis " + app + " | awk '{ print $2 }'\nexit\n");
+            child.stdin.write("which " + app + "\nexit\n");
         }
         else
         {

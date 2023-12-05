@@ -87,6 +87,7 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+*.o
 
 # Chutzpah Test files
 _Chutzpah*
@@ -329,3 +330,5 @@ ASALocalRun/
 
 # Klocwork
 .klocwork/
+
+meshagent_*

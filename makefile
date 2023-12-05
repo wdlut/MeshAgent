@@ -185,7 +185,7 @@ PATH_MIPS24KC = ../ToolChains/toolchain-mips_24kc_gcc-7.3.0_musl/
 PATH_MIPSEL24KC = ../ToolChains/toolchain-mipsel_24kc_gcc-7.3.0_musl/
 PATH_ARM5 = ../ToolChains/LinuxArm/bin/
 PATH_POGO = ../ToolChains/pogoplug-gcc/bin/
-PATH_LINARO = ../ToolChains/linaro-arm/bin/
+#PATH_LINARO = ../ToolChains/linaro-arm/bin/
 PATH_POKY = ../Galileo/arduino-1.5.3/hardware/tools/sysroots/x86_64-pokysdk-linux/usr/bin/i586-poky-linux-uclibc/
 PATH_POKY64 = /opt/poky/1.6.1/sysroots/x86_64-pokysdk-linux/usr/bin/x86_64-poky-linux/
 PATH_AARCH64 = ../ToolChains/aarch64--glibc--stable/
@@ -193,6 +193,7 @@ PATH_AARCH64_CORTEXA53 = ../ToolChains/toolchain-aarch64_cortex-a53_gcc-7.5.0_mu
 PATH_ARMADA370_HF = /home/dev/arm-unknown-linux-gnueabi/
 PATH_RPI = ../ToolChains/arm-rpi-4.9.3-linux-gnueabihf/
 PATH_OPENWRT_X86_64 = /home/dev/openwrt/staging_dir/toolchain-x86_64_gcc-7.3.0_musl/
+PATH_BUILDROOT = ../ToolChains/buildroot/output/host/usr/
 
 OBJECTS = $(patsubst %.c,%.o, $(SOURCES))
 
@@ -202,6 +203,7 @@ STRIP = strip
 
 # Need to be separate for dependency generation	
 INCDIRS = -I. -Iopenssl/include -Imicrostack -Imicroscript -Imeshcore -Imeshconsole
+INCDIRS += -Ilib-jpeg-turbo/includes
 
 # Compiler and linker flags
 CFLAGS ?= -std=gnu99 -g -Wall -D_POSIX -DMICROSTACK_PROXY $(CWEBLOG) $(CWATCHDOG) -fno-strict-aliasing $(INCDIRS) -DDUK_USE_DEBUGGER_SUPPORT -DDUK_USE_INTERRUPT_COUNTER -DDUK_USE_DEBUGGER_INSPECT -DDUK_USE_DEBUGGER_PAUSE_UNCAUGHT
@@ -281,7 +283,16 @@ endif
 # Official Linux x86 32bit
 ifeq ($(ARCHID),5)
 ARCHNAME = x86
+
+ifeq ($(BUILDROOT),1)
+export LD_LIBRARY_PATH := $(PATH_BUILDROOT)lib:$(LD_LIBRARY_PATH)
+CC = $(PATH_BUILDROOT)bin/i686-buildroot-linux-gnu-gcc
+STRIP = $(PATH_BUILDROOT)bin/i686-buildroot-linux-gnu-strip
+CEXTRA += -I$(PATH_BUILDROOT)include -I$(PATH_BUILDROOT)i686-buildroot-linux-gnu/sysroot/usr/include -I$(PATH_BUILDROOT)i686-buildroot-linux 
+else
 CC = gcc -m32
+endif
+
 KVM = 1
 LMS = 1
 endif

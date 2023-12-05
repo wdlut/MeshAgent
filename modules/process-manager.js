@@ -122,7 +122,7 @@ function processManager() {
                 var p = require('child_process').execFile('/bin/sh', ['sh']);
                 p.stdout.str = ''; p.stdout.on('data', function (c) { this.str += c.toString(); });
                 p.stderr.str = ''; p.stderr.on('data', function (c) { this.str += c.toString(); });
-                p.stdin.write('ps -e -o pid -o ' + users + ' -o args | tr ' + "'\\n' '\\t' | awk -F" + '"\\t" \'');
+                p.stdin.write('\'ps\' -e -o pid -o ' + users + ' -o args | tr ' + "'\\n' '\\t' | awk -F" + '"\\t" \'');
                 p.stdin.write('{');
                 p.stdin.write('   printf "{"; ');
                 p.stdin.write('   for(i=1;i<NF;++i)');
@@ -148,7 +148,7 @@ function processManager() {
                     var p = require('child_process').execFile('/bin/sh', ['sh']);
                     p.stdout.str = ''; p.stdout.on('data', function (c) { this.str += c.toString(); });
                     p.stderr.str = ''; p.stderr.on('data', function (c) { this.str += c.toString(); });
-                    p.stdin.write("ps | tr '\\n' '`' | awk -F'`' '");
+                    p.stdin.write("\'ps\' | tr '\\n' '`' | awk -F'`' '");
                     p.stdin.write('{');
                     p.stdin.write('   len=split($1,A," "); X=index($1,A[len]);');
                     p.stdin.write('   printf "{"; ');
@@ -327,7 +327,7 @@ function processManager() {
                 var child = require('child_process').execFile('/bin/sh', ['sh']);
                 child.stdout.str = '';
                 child.stdout.on('data', function (chunk) { this.str += chunk.toString(); });
-                child.stdin.write("whereis pgrep | awk '{ print $2 }'\nexit\n");
+                child.stdin.write("which pgrep\nexit\n");
                 child.waitExit();
                 return (child.stdout.str.trim());
             })()
@@ -375,7 +375,7 @@ function processManager() {
         var child = require('child_process').execFile('/bin/sh', ['sh']);
         child.stdout.str = ''; child.stdout.on('data', function (c) { this.str += c.toString(); });
         child.stderr.str = ''; child.stderr.on('data', function (c) { this.str += c.toString(); });
-        child.stdin.write('ps -ax -o pid -o command | grep ' + cmd + " | tr '\\n' '\\t' | awk -F" + '"\\t" \'{ printf "["; for(i=1;i<NF;++i) { split($i,r," "); if(r[2]!="grep") { if(i>1) { printf ","; } printf "%s", r[1]; } } printf "]"; }\'');
+        child.stdin.write('\'ps\' -ax -o pid -o command | grep ' + cmd + " | tr '\\n' '\\t' | awk -F" + '"\\t" \'{ printf "["; for(i=1;i<NF;++i) { split($i,r," "); if(r[2]!="grep") { if(i>1) { printf ","; } printf "%s", r[1]; } } printf "]"; }\'');
         child.stdin.write('\nexit\n');
         child.waitExit();
 

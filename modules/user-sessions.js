@@ -810,7 +810,7 @@ function UserSessions()
             var child = require('child_process').execFile('/bin/sh', ['sh']);
             child.stdout.str = ''; child.stdout.on('data', function (chunk) { this.str += chunk.toString(); });
             child.stderr.str = ''; child.stderr.on('data', function (chunk) { this.str += chunk.toString(); });
-            child.stdin.write("ps -e -o uid -o pid -o cmd | grep Xvfb | tr '\\n' '`' | awk '{");
+            child.stdin.write("\'ps\' -e -o uid -o pid -o cmd | grep Xvfb | tr '\\n' '`' | awk '{");
             child.stdin.write('printf "[";');
             child.stdin.write('del="";');
             child.stdin.write('n=split($0, lines, "`");');
@@ -1183,7 +1183,7 @@ function UserSessions()
             var child = require('child_process').execFile('/bin/sh', ['sh']);
             child.stdout.str = '';
             child.stdout.on('data', function (chunk) { this.str += chunk.toString(); });
-            child.stdin.write("ps " + (process.platform == 'freebsd' ? "-ax ":"") + "-e -o pid -o user | grep " + uname + " | awk '{ print $1 }'\nexit\n");
+            child.stdin.write("\'ps\' " + (process.platform == 'freebsd' ? "-ax ":"") + "-e -o pid -o user | grep " + uname + " | awk '{ print $1 }'\nexit\n");
             child.waitExit();
 
             var lines = child.stdout.str.split('\n');

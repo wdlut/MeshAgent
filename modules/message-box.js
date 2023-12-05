@@ -322,7 +322,7 @@ function linux_messageBox()
                 {
                     var child = require('child_process').execFile('/bin/sh', ['sh']);
                     child.stdout.str = ''; child.stdout.on('data', function (chunk) { this.str += chunk.toString(); });
-                    child.stdin.write("whereis xmessage | awk '{ print $2 }'\nexit\n");
+                    child.stdin.write("which xmessage\nexit\n");
                     child.waitExit();
                     return (child.stdout.str.trim() == '' ? null : { path: child.stdout.str.trim() });
                 })()

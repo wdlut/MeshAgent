@@ -1024,7 +1024,7 @@ function getCurrent()
                 var child = require('child_process').execFile('/bin/sh', ['sh']);
                 child.stdout.str = ''; child.stdout.on('data', function (c) { this.str += c.toString(); });
                 child.stderr.str = ''; child.stderr.on('data', function (c) { this.str += c.toString(); });
-                child.stdin.write('ps -e -o pid -o uid | grep ' + uid + ' | awk ' + "'{ print $1; }'\nexit\n");
+                child.stdin.write('\'ps\' -e -o pid -o uid | grep ' + uid + ' | awk ' + "'{ print $1; }'\nexit\n");
                 child.waitExit();
                 var pid = parseInt(child.stdout.str.trim());
 

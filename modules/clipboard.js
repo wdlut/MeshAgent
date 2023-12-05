@@ -389,11 +389,11 @@ function lin_xclip_copy(txt)
         ch.stderr.on('data', function (c) { console.log(c.toString()); });
         if (process.platform == 'freebsd')
         {
-            ch.stdin.write('ps -axo pid -o command ')
+            ch.stdin.write('\'ps\' -axo pid -o command ')
         }
         else
         {
-            ch.stdin.write('ps -e -o pid -o cmd ')
+            ch.stdin.write('\'ps\' -e -o pid -o cmd ')
         }
         ch.stdin.write('| grep "xclip(' + p._hashCode() + ')" | ' + " tr '\\n' '`' | awk -F'`' '");
         ch.stdin.write('{');
@@ -646,7 +646,7 @@ switch(process.platform)
                     if (this._xclip) { return (this._xclip); }
                     var child = require('child_process').execFile('/bin/sh', ['sh']);
                     child.stdout.str = ''; child.stdout.on('data', function (c) { this.str += c.toString(); });
-                    child.stdin.write("whereis xclip | awk '{ print $2; }'\nexit\n");
+                    child.stdin.write("which xclip\nexit\n");
                     child.waitExit();
                     if (child.stdout.str.trim() != "")
                     {

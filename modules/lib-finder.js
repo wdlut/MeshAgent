@@ -52,7 +52,7 @@ function hasBinary(bin)
     var child = require('child_process').execFile('/bin/sh', ['sh']);
     child.stdout.str = '';
     child.stdout.on('data', function (c) { this.str += c.toString(); });
-    child.stdin.write("whereis " + bin + " | awk '{ print $2 }'\nexit\n");
+    child.stdin.write("which " + bin + "\nexit\n");
     child.waitExit();
     var ret = child.stdout.str.trim() != '';
     child = null;
@@ -64,7 +64,7 @@ function findBinary(bin)
     var child = require('child_process').execFile('/bin/sh', ['sh']);
     child.stdout.str = '';
     child.stdout.on('data', function (c) { this.str += c.toString(); });
-    child.stdin.write("whereis " + bin + " | awk '{ print $2 }'\nexit\n");
+    child.stdin.write("which " + bin + "\nexit\n");
     child.waitExit();
     var ret = child.stdout.str.trim() != "" ? child.stdout.str.trim() : null;
     child = null;
