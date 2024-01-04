@@ -470,7 +470,7 @@ function windows_notifybar_local(title, bar_options)
 function x_notifybar_check(title)
 {
     var script = Buffer.from("require('notifybar-desktop')('" + title + "').on('close', function(){process.exit();});").toString('base64');
-
+    
     var min = require('user-sessions').minUid();
     var uid = -1;
     var self = require('user-sessions').Self();
@@ -562,6 +562,8 @@ function x_notifybar(title)
         .createEvent('close')
         .addMethod('close', function close()
         {
+            require('monitor-info')._X11.XDestroyWindow( this._windows.peek().display, this._windows.peek().notifybar );
+            require('monitor-info')._X11.XFlush( this._windows.peek().display );
         });
 
     ret._promise.createBars = function (m)
@@ -589,15 +591,14 @@ function x_notifybar(title)
             require('monitor-info').hideWindowIcon(m[i].display, this.notifybar._windows.peek().root, this.notifybar._windows.peek().notifybar);
 
             require('monitor-info').setAllowedActions(m[i].display, this.notifybar._windows.peek().notifybar, require('monitor-info').MOTIF_FLAGS.MWM_FUNC_CLOSE);
-            require('monitor-info').setAlwaysOnTop(m[i].display, this.notifybar._windows.peek().root, this.notifybar._windows.peek().notifybar);
-
-
+            
             var wm_delete_window_atom = require('monitor-info')._X11.XInternAtom(m[i].display, require('_GenericMarshal').CreateVariable('WM_DELETE_WINDOW'), 0).Val;
             var atoms = require('_GenericMarshal').CreateVariable(4);
             atoms.toBuffer().writeUInt32LE(wm_delete_window_atom);
             require('monitor-info')._X11.XSetWMProtocols(m[i].display, this.notifybar._windows.peek().notifybar, atoms, 1);
 
             require('monitor-info')._X11.XMapWindow(m[i].display, this.notifybar._windows.peek().notifybar);
+            require('monitor-info').setAlwaysOnTop(m[i].display, this.notifybar._windows.peek().root, this.notifybar._windows.peek().notifybar);
             require('monitor-info')._X11.XFlush(m[i].display);
 
             this.notifybar._windows.peek().DescriptorEvent = require('DescriptorEvents').addDescriptor(require('monitor-info')._X11.XConnectionNumber(m[i].display).Val, { readset: true });
@@ -616,14 +617,14 @@ function x_notifybar(title)
                         if (clientType == this.atom)
                         {
                             require('DescriptorEvents').removeDescriptor(fd);
-                            require('monitor-info')._X11.XCloseDisplay(this._display);
+                            //require('monitor-info')._X11.XCloseDisplay(this._display);
                             ret.emit('close');
-                            ret._windows.clear();
+                            //ret._windows.clear();
                             break;
                         }
                     }
                 }
-            });
+            }); 
         }
     };
     ret._promise.then(function (m)
@@ -654,7 +655,7 @@ function x_notifybar(title)
                 }
             });
         }
-       
+
     });
     return (ret);
 }
